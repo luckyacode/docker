@@ -1,0 +1,16 @@
+services:
+  mongoserver:
+    image: mongo:latest
+    container_name: mongoserver
+    ports:
+      - "27017:27017"
+
+  spring-mongo-app:
+    image: spring-mongo-app:1
+    container_name: spring-mongo-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongoserver
+    environment:
+      SPRING_DATA_MONGODB_DATABASE: praveenDb

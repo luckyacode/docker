@@ -1,4 +1,4 @@
 FROM openjdk:21
 EXPOSE 8080
-ADD target/springboot-docker.jar springboot-docker.jar
-ENTRYPOINT ["java", "-jar", "springboot-docker.jar"]
+ADD target/spring-mongo-app.jar spring-mongo-app.jar
+ENTRYPOINT ["java", "-jar", "spring-mongo-app.jar"]
