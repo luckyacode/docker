@@ -1,6 +1,7 @@
-spring:
-  data:
-    mongodb:
-      database: praveenDb
-      host: mongoserver
-      port: 27017
+#spring:
+#  data:
+#    mongodb:
+#      database: praveenDb
+#      host: localhost
+#      port: 27017
+#

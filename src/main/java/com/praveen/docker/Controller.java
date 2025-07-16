@@ -1,37 +1,53 @@
 package com.praveen.docker;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 public class Controller {
-
     @Autowired
-    EmployeesRepository employeesRepository;
+    MyService myService;
 
     @GetMapping
     public String start() {
-        return "Docker is running successfully!";
+        return "Kubernetes is running successfully!";
     }
 
     @GetMapping("/test")
     public String test() {
-        return "Test endpoint is working!";
-    }
-
-    @GetMapping("/save")
-    public String save() {
-        Employees employee = Employees.builder().name("John").lastName("Doe").age(30).salary(50000.0).department("Engineering").dob("1993-01-01").email("myemail.com").status("Active").build();
-        employeesRepository.save(employee);
-        return "Successfully saved employee data!";
+        return "Test kubernetes docker endpoint is working!";
     }
 
     @GetMapping("/get")
-    public List get() {
-        return employeesRepository.findAll();
+    public ResponseEntity<ResponseDTO<Object>> testGet() {
+       return ResponseEntity.ok(ResponseDTO.builder().
+               message(HttpStatus.OK.name()).
+               data(myService.testGet()).
+               status(HttpStatus.OK.value())
+               .build());
     }
+
+    @PostMapping("/post")
+    public ResponseDTO<?> testPost() {
+        return ResponseDTO.builder().
+                message(HttpStatus.OK.name()).
+                data(myService.testPost()).
+                status(HttpStatus.OK.value())
+                .build();
+    }
+
+    @PutMapping("/put")
+    public String testPut() {
+        return myService.testPut();
+    }
+
+    @DeleteMapping("/delete")
+    public String testDelete() {
+        return myService.testDelete();
+    }
+
 
 }

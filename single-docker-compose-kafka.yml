@@ -31,3 +31,13 @@ services:
     container_name: mongoserver2
     ports:
       - "27017:27017"
+  springbootapp:
+    image: springbootapp
+    container_name: springbootapp
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATA_MONGODB_DATABASE: praveenDb
+    depends_on:
+      - mongoserver2
