@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class PaymentInfo {
-    private int amount;
+    private Integer amount;
     private String paymentBy;
     private String timestamp;
 }
