@@ -325,6 +325,152 @@ public class PracticeDs {
         return ar;
     }
 
+//🔹 KMP Algorithm
+    // need to look
 
+ public class ListNode {
+      int val;
+      ListNode next;
+      ListNode() {}
+     ListNode(int val){
+          this.val = val;
+     }
+  }
+
+  //reverse linked list
+    public ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode curr = head;
+
+        while(curr!=null)
+        {
+            ListNode next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    //cycle in linkedlist
+    public boolean hasCycle(ListNode head) {
+        if(head==null || head.next==null) return false;
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while(fast!=null && fast.next!=null)
+        {
+            if(slow==fast) return true;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return false;
+    }
+
+//merge two sorted list
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode list = new ListNode();
+        ListNode newList = list;
+        while (list1 != null && list2 != null) {
+            if (list1.val < list2.val) {
+                newList.next = list1;
+                list1 = list1.next;
+            } else {
+                newList.next = list2;
+                list2 = list2.next;
+            }
+            newList = newList.next;
+        }
+        if (list1 != null) newList.next = list1;
+        if (list2 != null) newList.next = list2;
+        return list.next;
+    }
+
+    //not good approach intersection of record
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        Set<ListNode> set = new HashSet<>();
+        while(headA!=null){
+            set.add(headA);
+            headA = headA.next;
+        }
+        while(headB!=null){
+            if(set.contains(headB))
+                return headB;
+            else{
+                set.add(headB);
+                headB = headB.next;
+            }
+        }
+        return null;
+    }
+//Best
+    public ListNode getIntersectionNode2(ListNode headA, ListNode headB) {
+        ListNode a = headA;
+        ListNode b = headB;
+        while(a !=b){
+            a = ( a==null) ? headB : a.next;
+            b = (b==null) ? headA : b.next;
+        }
+        return a;
+    }
+
+//    Copy List with Random Pointer
+    // need to look
+
+    //selfown answer code
+//    Add Two Numbers
+//    Problem: Add two numbers represented by linked lists (digits in reverse order).
+//    Input: l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
+//Output: [8,9,9,9,0,0,0,1]
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode();
+        ListNode list = head;
+        int carry = 0,sum=0;
+        while(l1!=null && l2!=null){
+            sum = l1.val + l2.val + carry;
+            list.next = new ListNode(sum%10);
+            list = list.next;
+            carry=sum/10;
+            l1=l1.next;
+            l2=l2.next;
+        }
+        while(l1!=null){
+            sum = l1.val + carry;
+            list.next = new ListNode(sum%10);
+            list = list.next;
+            carry=sum/10;
+            l1=l1.next;
+        }
+        while(l2!=null){
+            sum = l2.val + carry;
+            list.next = new ListNode(sum%10);
+            list = list.next;
+            carry=sum/10;
+            l2=l2.next;
+        }
+        if(carry!=0){
+            list.next = new ListNode(carry);
+        }
+        return head.next;
+    }
+
+//    Valid Parentheses
+//Problem: Check if input string has valid open-close brackets.
+//Approach: Use a Stack to track open brackets.
+//Input: s = "()[]{}"
+//Output: true
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        char[] ch = s.toCharArray();
+        for (char c : ch) {
+            if (c == '(' || c == '[' || c == '{') stack.push(c);
+            else {
+                if (stack.isEmpty()) return false;
+                char top = stack.pop();
+                if ((c == ')' && top != '(') || (c == ']' && top != '[') || (c == '}' && top != '{')) return false;
+
+            }
+        }
+        return stack.isEmpty();
+    }
 
 }
