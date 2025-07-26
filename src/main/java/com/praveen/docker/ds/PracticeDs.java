@@ -2,6 +2,7 @@ package com.praveen.docker.ds;
 
 import java.util.*;
 
+//sealed class in java
 public class PracticeDs {
     public static void main(String[] args) {
         int[] nums = new int[]{3, 2, 4};
@@ -472,5 +473,151 @@ public class PracticeDs {
         }
         return stack.isEmpty();
     }
+
+    //min stack
+//    Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+    class MinStack {
+        Stack<Integer> stack =null;
+        Stack<Integer> minHeap =null;
+
+
+        public MinStack() {
+            stack = new Stack<>();
+            minHeap = new Stack<>();
+        }
+
+        public void push(int val) {
+            stack.push(val);
+            if(minHeap.isEmpty())
+                minHeap.push(val);
+            else
+                minHeap.push(Math.min(val,minHeap.peek()));
+        }
+
+        public void pop() {
+            stack.pop();
+            minHeap.pop();
+        }
+
+        public int top() {
+            return stack.peek();
+        }
+
+        public int getMin() {
+
+            return minHeap.peek();
+        }
+    }
+
+    // Next Greater Element
+    //need to look
+//    LRU Cache
+//🔹 Circular Queue Implementation
+
+
+    //Longest Consecutive Sequence
+//    Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence
+//    Input: nums = [100,4,200,1,3,2]
+//Output: 4
+//Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for (int num : nums) set.add(num);
+
+        int maxLength = 0;
+
+        for (int num : set) {
+            // Only try to build from start of sequence
+            if (!set.contains(num - 1)) {
+                int curr = num;
+                int streak = 1;
+
+                while (set.contains(curr + 1)) {
+                    curr++;
+                    streak++;
+                }
+                maxLength = Math.max(maxLength, streak);
+            }
+        }
+        return maxLength;
+    }
+
+//    Top K Frequent Elements
+    //Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+//    Input: nums = [1,1,1,2,2,3], k = 2
+    //Output: [1,2]
+    public int[] topKFrequent(int[] nums, int k) {
+        List<Integer> list = Arrays.stream(nums).boxed().toList();
+        HashMap<Integer,Integer> hm = new HashMap<>();
+        for(int num : list){
+            if(!hm.containsKey(num))
+                hm.put(num,Collections.frequency(list,num));
+        }
+        int size= hm.size()-k;
+        return hm.entrySet().stream().sorted(Map.Entry.comparingByValue()).skip(size).map(Map.Entry::getKey).mapToInt(Integer::intValue).toArray();
+
+    }
+
+
+    //group anagram
+//    Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+//    Input: strs = ["eat","tea","tan","ate","nat","bat"]
+//Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+    public List<List<String>> groupAnagrams2(String[] strs) {
+        HashMap<String,List<String>> map = new HashMap<>();
+        for(String s : strs){
+            char[] array = s.toCharArray();
+            Arrays.sort(array);
+            String key = new String(array);
+            map.computeIfAbsent(key,k-> new ArrayList<>()).add(s);
+        }
+        return new ArrayList<>(map.values());
+    }
+
+
+    // word pattern
+//Given a pattern and a string s, find if s follows the same pattern.
+//    Input: pattern = "abba", s = "dog cat cat dog"
+//Output: true
+    public static boolean wordPattern(String pattern, String s) {
+        HashMap<Character, String> charToWord = new HashMap<>();
+        HashMap<String, Character> wordToChar = new HashMap<>();
+        String[] words = s.split(" ");
+        if (pattern.length() != words.length) return false;
+        for (int i = 0; i < pattern.length(); i++) {
+            char ch = pattern.charAt(i);
+            String word = words[i];
+            if (charToWord.containsKey(ch)) {
+                if (!charToWord.get(ch).equals(word)) return false;
+            } else {
+                if (wordToChar.containsKey(word)) return false;
+                charToWord.put(ch, word);
+                wordToChar.put(word, ch);
+            }
+        }
+        return true;
+    }
+
+
+        //isomorphic string
+
+    public boolean isIsomorphic(String s, String t) {
+        HashMap<Character, Character> char1 = new HashMap<>();
+        HashMap<Character, Character> char2 = new HashMap<>();
+        if (s.length() != t.length()) return false;
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            char word = t.charAt(i);
+            if (char1.containsKey(ch)) {
+                if (!char1.get(ch).equals(word)) return false;
+            } else {
+                if (char2.containsKey(word)) return false;
+                char1.put(ch, word);
+                char2.put(word, ch);
+            }
+        }
+        return true;
+    }
+
 
 }
