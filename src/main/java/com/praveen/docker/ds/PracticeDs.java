@@ -1,4 +1,5 @@
-package com.praveen.docker.ds;
+package ds;
+
 
 import java.util.*;
 
@@ -618,6 +619,129 @@ public class PracticeDs {
         }
         return true;
     }
+    class TreeNode{
+        int val;
+        TreeNode left;
+        TreeNode right;
+    }
+    //inorder traversal tree
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        inOrder(list,root);
+        return list;
+    }
 
+    void inOrder(List<Integer> list,TreeNode root){
+        if(root!=null){
+            inOrder(list,root.left);
+            list.add(root.val);
+            inOrder(list,root.right);
+        }
+    }
+
+//Preorder
+void preOrder(List<Integer> list,TreeNode root){
+    if(root!=null){
+        list.add(root.val);
+        preOrder(list,root.left);
+        preOrder(list,root.right);
+    }
+}
+
+// level order traversal - BSF
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if(root==null) return new ArrayList<>();
+        List<List<Integer>> result = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            List<Integer> list = new ArrayList<>();
+            for(int i=0;i< size;i++){
+                TreeNode node = queue.poll();
+                list.add(node.val);
+                if(node.left!=null) queue.offer(node.left);
+                if(node.right!=null) queue.offer(node.right);
+            }
+            result.add(list);
+        }
+        return result;
+    }
+
+//  Inorder traversal using stack
+//     stack iterative
+public List<Integer> inOrder(TreeNode treeNode) {
+    List<Integer> list = new ArrayList<>();
+    Stack<TreeNode> stack = new Stack<>();
+    TreeNode curr = treeNode;
+    while (!stack.isEmpty() || curr != null) {
+        if (curr != null) {
+            stack.push(curr);
+            curr = curr.left;
+        } else {
+            curr = stack.pop();
+            list.add(curr.val);
+            curr = curr.right;
+        }
+    }
+    return list;
+}
+
+// pre order iterative using stack
+    public List<Integer> preOrder(TreeNode treeNode) {
+        List<Integer> list = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(treeNode);
+        TreeNode curr = stack.peek();
+        while (!stack.isEmpty()) {
+            curr = stack.pop();
+            list.add(curr.val);
+            if(curr.right!=null) stack.push(curr.right);
+            if(curr.left!=null) stack.push(curr.left);
+        }
+        return list;
+    }
+
+    //postorder using stack/deque iterative
+    public List<Integer> postorderTraversal(TreeNode root) {
+        if(root==null) return new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        TreeNode curr = null;
+        while (!stack.isEmpty()) {
+            curr = stack.pop();
+            list.addFirst(curr.val);
+            if(curr.left!=null) stack.push(curr.left);
+            if(curr.right!=null) stack.push(curr.right);
+        }
+        return list;
+    }
+
+    //Diameter of binary tree
+//    The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
+    int maxDiameter  = 0;
+    public int diameterOfBinaryTree(TreeNode root) {
+        depth(root);
+        return maxDiameter;
+    }
+    public int depth(TreeNode root){
+        if(root==null) return 0;
+        int leftDepth = depth(root.left);
+        int rightDepth = depth(root.right);
+        maxDiameter = Math.max(maxDiameter,(leftDepth+rightDepth));
+        return Math.max(leftDepth,rightDepth)+1;
+    }
+
+    //lowest common ancestor
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) return root;
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left == null) return right;
+        else if (right == null) return left;
+        else return root;
+    }
 
 }
