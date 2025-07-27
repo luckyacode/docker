@@ -1,9 +1,9 @@
-package ds;
-
+package com.praveen.docker.ds;
 
 import java.util.*;
 
 //sealed class in java
+// BFS level order (queue), DFS preorder traversal (stack)
 public class PracticeDs {
     public static void main(String[] args) {
         int[] nums = new int[]{3, 2, 4};
@@ -623,6 +623,10 @@ public class PracticeDs {
         int val;
         TreeNode left;
         TreeNode right;
+
+        public TreeNode(int num) {
+            this.val = num;
+        }
     }
     //inorder traversal tree
     public List<Integer> inorderTraversal(TreeNode root) {
@@ -743,5 +747,75 @@ public List<Integer> inOrder(TreeNode treeNode) {
         else if (right == null) return left;
         else return root;
     }
+
+    //balanced binary tree
+    public boolean isBalanced(TreeNode root) {
+        return height(root) != -1;
+    }
+
+    private int height(TreeNode root) {
+        if (root == null) return 0;
+        int left = height(root.left);
+        int right = height(root.right);
+        if (left == -1 || right == -1 || Math.abs(left - right) > 1) return -1;
+        return Math.max(left, right) + 1;
+    }
+
+
+    //valid binary search tree left <root< right
+    public boolean isValidBST(TreeNode root) {
+        return validBST(root,Long.MIN_VALUE,Long.MAX_VALUE);
+    }
+    private boolean validBST(TreeNode root, long min, long max){
+        if(root==null) return true;
+        if(root.val<=min || root.val>=max) return false;
+        return validBST(root.left,min,root.val) && validBST(root.right,root.val,max);
+    }
+
+    //kth smallest element in BST
+//     inorder traversal give sorted list just get k-1
+    public int kthSmallest(TreeNode root, int k) {
+        List<Integer> list = inorderTraversal(root);
+        return list.get(k-1);
+    }
+
+    //sorted array convert to binary search tree
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return buildTree(nums, 0, nums.length - 1);
+    }
+
+    private TreeNode buildTree(int[] nums, int left, int right) {
+        if (left > right) return null;
+        int mid = (left + right) / 2;
+        TreeNode node = new TreeNode(nums[mid]);
+        node.left = buildTree(nums, left, mid - 1);
+        node.right = buildTree(nums, mid + 1, right);
+        return node;
+    }
+
+    class Node {
+        public int val;
+        public List<Node> neighbors;
+        public Node(int val){
+            this.val = val;
+        }
+    }
+    //clone graph
+    public Node cloneGraph(Node node) {
+        if(node==null) return null;
+        HashMap<Node,Node> map = new HashMap<>();
+        return dfs(node,map);
+    }
+    private Node dfs(Node node,Map<Node,Node> map){
+        if(map.containsKey(node)) return map.get(node);
+
+        Node clone = new Node(node.val);
+        map.put(node,clone);
+        for(Node neighbour : node.neighbors){
+            clone.neighbors.add(dfs(neighbour,map));
+        }
+        return clone;
+    }
+
 
 }

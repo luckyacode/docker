@@ -5,6 +5,23 @@ import com.sun.source.tree.Tree;
 
 import java.util.*;
 
+class Node {
+    public int val;
+    public List<Node> neighbors;
+    public Node() {
+        val = 0;
+        neighbors = new ArrayList<Node>();
+    }
+    public Node(int _val) {
+        val = _val;
+        neighbors = new ArrayList<Node>();
+    }
+    public Node(int _val, ArrayList<Node> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+}
+
 class TreeNode {
     int val;
     TreeNode left;
@@ -152,6 +169,21 @@ class Solution {
         return (left!=null) ? root.left :root.right;
     }
 
+    public Node cloneGraph(Node node) {
+        if(node==null) return null;
+        HashMap<Node,Node> map = new HashMap<>();
+        return dfs(node,map);
+    }
+    private Node dfs(Node node,Map<Node,Node> map){
+        if(map.containsKey(node)) return map.get(node);
+
+        Node clone = new Node(node.val);
+        map.put(node,clone);
+        for(Node neighbour : node.neighbors){
+            clone.neighbors.add(dfs(neighbour,map));
+        }
+        return clone;
+    }
 }
 
 public class SimpleTest {
@@ -172,6 +204,8 @@ public class SimpleTest {
         System.out.println(s.postOrder(root));
         System.out.println(s.diameterOfBinaryTree(root));
         System.out.println(s.lowestCommonAncestor(root,rt,rt.left));
+        Queue<TreeNode> queue = new LinkedList<>();
+
     }
 }
 
