@@ -1,9 +1,21 @@
 package com.praveen.docker.ds;
 
+
 import java.util.*;
+
 
 //sealed class in java
 // BFS level order (queue), DFS preorder traversal (stack)
+//Min-Heap	new PriorityQueue<>()	Smallest
+//        Max-Heap	new PriorityQueue<>((a, b) -> b - a) Largest or <>(Collections.reverseOrder());
+class Edge {
+    int to, weight;
+    Edge(int to, int weight) {
+        this.to = to;
+        this.weight = weight;
+    }
+}
+
 public class PracticeDs {
     public static void main(String[] args) {
         int[] nums = new int[]{3, 2, 4};
@@ -815,6 +827,149 @@ public List<Integer> inOrder(TreeNode treeNode) {
             clone.neighbors.add(dfs(neighbour,map));
         }
         return clone;
+    }
+
+    //cycle in undirected graph
+    public boolean hasCycle(int v,List<List<Integer>> adj){
+        boolean[] visited = new boolean[v];
+        for(int i=0;i<v;i++){
+            if(!visited[i]){
+                if(dfsCycle(i,-1,visited,adj)) return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean dfsCycle(int node,int parent,boolean[] visited,List<List<Integer>> adj){
+        visited[node] = true;
+        for(int neighbor : adj.get(node)){
+            if(!visited[neighbor]) {
+                if (dfsCycle(neighbor, node, visited, adj))
+                    return true;
+            }else if(neighbor!=parent)
+                    return true;
+        }
+        return false;
+    }
+
+    //cycle in directed graph
+    public boolean hasDfsCycleDirect(int v,List<List<Integer>> adj){
+        boolean[] visited = new boolean[v];
+        boolean[] recStack = new boolean[v];
+        for(int i=0;i<v;i++){
+            if(!visited[i])
+                if(dfsCycleDirect(i,visited,recStack,adj))
+                    return true;
+        }
+        return false;
+    }
+
+    private boolean dfsCycleDirect(int node, boolean[] visited, boolean[] recStack, List<List<Integer>> adj) {
+        visited[node] = true;
+        recStack[node] = true;
+        for(int neighbor : adj.get(node)){
+            if(!visited[neighbor]) {
+                if (dfsCycleDirect(neighbor, visited, recStack, adj)) return true;
+            }else if(recStack[neighbor]) return true;
+        }
+        recStack[node] = false;
+        return false;
+    }
+
+
+    //dijkstra algorithm single source shortest path using priority queue so no need to maintain minimum node distance so far
+    private static int[] dijkstra(int V, List<List<Edge>> adj, int src) {
+        int[] dist = new int[V];
+        Arrays.fill(dist,Integer.MAX_VALUE);
+        dist[src] = 0;
+        PriorityQueue<Edge> queue = new PriorityQueue<>(Comparator.comparing(e->e.weight));
+        queue.offer(new Edge(src,0));
+        while(!queue.isEmpty()){
+            Edge curr = queue.poll();
+            int u = curr.to;
+            for(Edge neighbor : adj.get(u)){
+                int v = neighbor.to;
+                int newDis = neighbor.weight;
+                if(dist[u]+newDis < dist[v])
+                {
+                    dist[v] = dist[u]+newDis;
+                    queue.offer(new Edge(v,dist[v]));
+                }
+            }
+        }
+        return dist;
+    }
+
+    //merge k sorted linkedlist and return one list
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null) return new ListNode();
+        PriorityQueue<ListNode> queue = new PriorityQueue<>(Comparator.comparing(e -> e.val));
+        for (ListNode item : lists) {
+            if (item != null) queue.offer(item);
+        }
+        ListNode start = new ListNode();
+        ListNode ptr = start;
+        while (!queue.isEmpty()) {
+            ListNode item = queue.poll();
+            ptr.next = item;
+            ptr = ptr.next;
+            if (item.next != null) queue.offer(item.next);
+        }
+        return start.next;
+    }
+
+    // median from input data stream
+    //The median is the middle value in an ordered integer list. If the size of the list is even, there is no middle value, and the median is the mean of the two middle values.
+    class MedianFinder {
+        PriorityQueue<Integer> minHeap;
+        PriorityQueue<Integer> maxHeap;
+
+        public MedianFinder() {
+            minHeap = new PriorityQueue<>();
+            maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        }
+
+        public void addNum(int num) {
+            minHeap.offer(num);
+            maxHeap.offer(minHeap.poll());
+            if(minHeap.size()<maxHeap.size()){
+                minHeap.offer(maxHeap.poll());
+            }
+        }
+
+        public double findMedian() {
+            int minHeapSize = minHeap.size();
+            int maxHeapSize = maxHeap.size();
+            if(minHeapSize==maxHeapSize)
+                return (minHeap.peek()+maxHeap.peek())/2.0;
+            return minHeap.peek();
+        }
+    }
+
+
+    //fabbonnaci memeorization
+    HashMap<Integer,Integer> map = new HashMap<>();
+    public void fabonnaci(int n){
+        System.out.println(fab(n));
+    }
+
+    public int fab(int n){
+        if(n<=1) return n;
+        if(map.containsKey(n)) return map.get(n);
+        int result = fab(n-1)+fab(n-2);
+        map.put(n,result);
+        return result;
+    }
+
+    //knapsack problem
+    static int knapsack(int capacity, int values[], int weights[]) {
+        int[] d = new int[capacity+1];
+        for(int i=0;i<weights.length;i++){
+            for(int j=capacity;j>=weights[i];j--){
+                d[j] = Math.max(d[j],d[j-weights[i]]+values[i]);
+            }
+        }
+        return d[capacity];
     }
 
 
