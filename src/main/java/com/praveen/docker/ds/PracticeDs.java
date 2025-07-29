@@ -202,17 +202,17 @@ public class PracticeDs {
 //    Output: 2
 //    Explanation: The subarray [4,3] has the minimal length under the problem
     public int minSubArrayLen(int target, int[] nums) {
-        int start = 0, sum = 0, minLen = Integer.MAX_VALUE;
+        int start = 0, sum = 0, minWindow = Integer.MAX_VALUE;
         for (int end = 0; end < nums.length; end++) {
             sum += nums[end];
             while (sum >= target) {
-                minLen = Math.min(minLen, end - start + 1);
+                minWindow = Math.min(minWindow, end - start + 1);
                 sum -= nums[start];
                 start++;
             }
         }
 
-        return (minLen == Integer.MAX_VALUE) ? 0 : minLen;
+        return (minWindow == Integer.MAX_VALUE) ? 0 : minWindow;
     }
 
 //    Longest Palindromic Substring
@@ -298,6 +298,7 @@ public class PracticeDs {
 //    Input: s = "abcabcbb"
 //Output: 3
 //Explanation: The answer is "abc", with the length of 3.
+    //using two pointer at 0 index left and right will move further right and add in set if duplicate left++
     public int lengthOfLongestSubstring(String s) {
         Set<Character> set = new HashSet<>();
         int left=0,maxLen = 0;
@@ -543,13 +544,13 @@ public class PracticeDs {
             // Only try to build from start of sequence
             if (!set.contains(num - 1)) {
                 int curr = num;
-                int streak = 1;
+                int currLen = 1;
 
                 while (set.contains(curr + 1)) {
                     curr++;
-                    streak++;
+                    currLen++;
                 }
-                maxLength = Math.max(maxLength, streak);
+                maxLength = Math.max(maxLength, currLen);
             }
         }
         return maxLength;
